@@ -1,6 +1,12 @@
 import React, { useState } from 'react'
 import './App.css'
 import profileImg from './assets/profile.jpg'
+import manukaImg from './assets/manuka.png'
+import wildflowerImg from './assets/wildflower.png'
+import orangeBlossomImg from './assets/orange_blossom.png'
+import lavenderImg from './assets/lavender.png'
+import eucalyptusImg from './assets/eucalyptus.png'
+import heroImg from './assets/hero.png'
 
 function App() {
   const [cart, setCart] = useState([]);
@@ -53,14 +59,14 @@ function App() {
   };
 
   const products = [
-    { id: 1, name: "Premium Manuka Honey (UMF 25+)", price: 55.00, description: "Medicinal grade honey from the remote forests of New Zealand.", image: "/src/assets/manuka.png" },
-    { id: 2, name: "Golden Wildflower Honey", price: 28.00, description: "A multi-floral blend with a rich, complex taste from sunny meadows.", image: "/src/assets/wildflower.png" },
-    { id: 3, name: "Orange Blossom Honey", price: 32.00, description: "Delicate citrus notes and a light, floral aroma from sun-drenched groves.", image: "/src/assets/orange_blossom.png" },
-    { id: 4, name: "Lavender Infused Honey", price: 35.00, description: "Soothing lavender essence infused into raw, creamy clover honey.", image: "/src/assets/lavender.png" },
-    { id: 5, name: "Dark Eucalyptus Honey", price: 30.00, description: "Bold, earthy, and slightly mentholated honey from Australian gum trees.", image: "/src/assets/eucalyptus.png" },
-    { id: 6, name: "Raw Clover Honey", price: 22.00, description: "The classic choice: mild, sweet, and perfectly creamy.", image: "/src/assets/hero.png" },
-    { id: 7, name: "Organic Acacia Honey", price: 38.00, description: "The clearest and most delicate honey, perfect for sweetening tea.", image: "/src/assets/wildflower.png" },
-    { id: 8, name: "Bold Buckwheat Honey", price: 26.00, description: "Deep, dark, and rich in antioxidants with a robust, malty flavor.", image: "/src/assets/manuka.png" }
+    { id: 1, name: "Premium Manuka Honey (UMF 25+)", price: 55.00, description: "Medicinal grade honey from the remote forests of New Zealand.", image: manukaImg },
+    { id: 2, name: "Golden Wildflower Honey", price: 28.00, description: "A multi-floral blend with a rich, complex taste from sunny meadows.", image: wildflowerImg },
+    { id: 3, name: "Orange Blossom Honey", price: 32.00, description: "Delicate citrus notes and a light, floral aroma from sun-drenched groves.", image: orangeBlossomImg },
+    { id: 4, name: "Lavender Infused Honey", price: 35.00, description: "Soothing lavender essence infused into raw, creamy clover honey.", image: lavenderImg },
+    { id: 5, name: "Dark Eucalyptus Honey", price: 30.00, description: "Bold, earthy, and slightly mentholated honey from Australian gum trees.", image: eucalyptusImg },
+    { id: 6, name: "Raw Clover Honey", price: 22.00, description: "The classic choice: mild, sweet, and perfectly creamy.", image: heroImg },
+    { id: 7, name: "Organic Acacia Honey", price: 38.00, description: "The clearest and most delicate honey, perfect for sweetening tea.", image: wildflowerImg },
+    { id: 8, name: "Bold Buckwheat Honey", price: 26.00, description: "Deep, dark, and rich in antioxidants with a robust, malty flavor.", image: manukaImg }
   ];
 
   const addToCart = (product) => {
