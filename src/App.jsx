@@ -44,6 +44,37 @@ function App() {
     }
   }, [view]);
 
+  // Dynamic Circular Favicon Effect
+  React.useEffect(() => {
+    const setCircularFavicon = () => {
+      const link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+      link.type = 'image/png';
+      link.rel = 'icon';
+
+      const canvas = document.createElement('canvas');
+      canvas.width = 64;
+      canvas.height = 64;
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      img.src = '/favicon.jpg'; // Load the original square image
+
+      img.onload = () => {
+        // Create circle clipping path
+        ctx.beginPath();
+        ctx.arc(32, 32, 32, 0, 2 * Math.PI);
+        ctx.closePath();
+        ctx.clip();
+        // Draw image
+        ctx.drawImage(img, 0, 0, 64, 64);
+        // Update favicon link
+        link.href = canvas.toDataURL();
+        document.getElementsByTagName('head')[0].appendChild(link);
+      };
+    };
+
+    setCircularFavicon();
+  }, []);
+
   const scrollToShop = (e) => {
     if (view !== 'home') {
       setView('home');
