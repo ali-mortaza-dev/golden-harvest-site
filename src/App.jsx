@@ -1,0 +1,295 @@
+import React, { useState } from 'react'
+import './App.css'
+import profileImg from './assets/profile.jpg'
+
+function App() {
+  const [cart, setCart] = useState([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [view, setView] = useState('home'); // 'home' or 'checkout' or 'success'
+  const [orderInfo, setOrderInfo] = useState({ name: '', address: '', payment: 'Cash on Delivery' });
+  const [activeReview, setActiveReview] = useState(0);
+
+  const reviews = [
+    { id: 1, author: "Eleanor V.", stars: 5, text: "The Manuka honey is truly exceptional. I can feel the quality in every spoonful." },
+    { id: 2, author: "Julian M.", stars: 5, text: "Fast delivery and beautiful packaging. The Orange Blossom is my new favorite." },
+    { id: 3, author: "Sophia L.", stars: 5, text: "I've tried many honeys, but Golden Harvest is on another level. Heavenly." }
+  ];
+
+  React.useEffect(() => {
+    if (view === 'home') {
+      const interval = setInterval(() => {
+        setActiveReview(prev => (prev + 1) % reviews.length);
+      }, 5000);
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+          }
+        });
+      }, { threshold: 0.1 });
+
+      document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+      return () => {
+        clearInterval(interval);
+        observer.disconnect();
+      };
+    }
+  }, [view]);
+
+  const scrollToShop = (e) => {
+    if (view !== 'home') {
+      setView('home');
+      setTimeout(() => {
+        const shopSection = document.getElementById('shop');
+        shopSection?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    } else {
+      e.preventDefault();
+      const shopSection = document.getElementById('shop');
+      shopSection?.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const products = [
+    { id: 1, name: "Premium Manuka Honey (UMF 25+)", price: 55.00, description: "Medicinal grade honey from the remote forests of New Zealand.", image: "/src/assets/manuka.png" },
+    { id: 2, name: "Golden Wildflower Honey", price: 28.00, description: "A multi-floral blend with a rich, complex taste from sunny meadows.", image: "/src/assets/wildflower.png" },
+    { id: 3, name: "Orange Blossom Honey", price: 32.00, description: "Delicate citrus notes and a light, floral aroma from sun-drenched groves.", image: "/src/assets/orange_blossom.png" },
+    { id: 4, name: "Lavender Infused Honey", price: 35.00, description: "Soothing lavender essence infused into raw, creamy clover honey.", image: "/src/assets/lavender.png" },
+    { id: 5, name: "Dark Eucalyptus Honey", price: 30.00, description: "Bold, earthy, and slightly mentholated honey from Australian gum trees.", image: "/src/assets/eucalyptus.png" },
+    { id: 6, name: "Raw Clover Honey", price: 22.00, description: "The classic choice: mild, sweet, and perfectly creamy.", image: "/src/assets/hero.png" },
+    { id: 7, name: "Organic Acacia Honey", price: 38.00, description: "The clearest and most delicate honey, perfect for sweetening tea.", image: "/src/assets/wildflower.png" },
+    { id: 8, name: "Bold Buckwheat Honey", price: 26.00, description: "Deep, dark, and rich in antioxidants with a robust, malty flavor.", image: "/src/assets/manuka.png" }
+  ];
+
+  const addToCart = (product) => {
+    setCart(prevCart => {
+      const existing = prevCart.find(item => item.id === product.id);
+      if (existing) {
+        return prevCart.map(item => item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item);
+      }
+      return [...prevCart, { ...product, quantity: 1 }];
+    });
+    setIsCartOpen(true);
+  };
+
+  const removeFromCart = (productId) => {
+    setCart(prevCart => prevCart.filter(item => item.id !== productId));
+  };
+
+  const updateQuantity = (productId, delta) => {
+    setCart(prevCart => prevCart.map(item => {
+      if (item.id === productId) {
+        const newQty = Math.max(1, item.quantity + delta);
+        return { ...item, quantity: newQty };
+      }
+      return item;
+    }));
+  };
+
+  const cartTotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
+
+  const handleCheckoutSubmit = (e) => {
+    e.preventDefault();
+    setView('success');
+    setCart([]);
+  };
+
+  return (
+    <div className="app">
+      <nav className="navbar">
+        <div className="brand-lockup" onClick={() => setView('home')} style={{ cursor: 'pointer' }}>
+          <div className="logo">GOLDEN HARVEST</div>
+          <div className="owner-name">Ali Mortaza Sikdar</div>
+        </div>
+        <ul className="nav-links">
+          <li><a href="#home" onClick={() => setView('home')}>Home</a></li>
+          <li><a href="#shop" onClick={scrollToShop}>Shop</a></li>
+          <li><a href="#reviews" onClick={() => setView('home')}>Reviews</a></li>
+        </ul>
+        <div className="nav-actions">
+          <button className="cart-btn" onClick={() => setIsCartOpen(true)}>
+            Cart
+            {cart.length > 0 && (
+              <span className="cart-badge">{cart.reduce((a, b) => a + b.quantity, 0)}</span>
+            )}
+          </button>
+          <button onClick={scrollToShop} className="btn-primary" style={{ padding: '0.6rem 1.5rem', marginLeft: '1rem' }}>Shop Now</button>
+        </div>
+      </nav>
+
+      {isCartOpen && (
+        <div className="cart-overlay" onClick={() => setIsCartOpen(false)}>
+          <div className="cart-sidebar" onClick={e => e.stopPropagation()}>
+            <div className="cart-header">
+              <h2>Your Collection</h2>
+              <button className="close-btn" onClick={() => setIsCartOpen(false)}>&times;</button>
+            </div>
+            <div className="cart-items">
+              {cart.length === 0 ? <p className="empty-msg">Your cart is as empty as a winter hive.</p> : (
+                cart.map(item => (
+                  <div key={item.id} className="cart-item">
+                    <img src={item.image} alt={item.name} />
+                    <div className="item-details">
+                      <h4>{item.name}</h4>
+                      <p>${item.price.toFixed(2)}</p>
+                      <div className="qty-controls">
+                        <button onClick={() => updateQuantity(item.id, -1)}>-</button>
+                        <span>{item.quantity}</span>
+                        <button onClick={() => updateQuantity(item.id, 1)}>+</button>
+                      </div>
+                    </div>
+                    <button className="remove-btn" onClick={() => removeFromCart(item.id)}>Remove</button>
+                  </div>
+                ))
+              )}
+            </div>
+            {cart.length > 0 && (
+              <div className="cart-footer">
+                <div className="total">
+                  <span>Total:</span>
+                  <span>${cartTotal.toFixed(2)}</span>
+                </div>
+                <button className="btn-primary checkout-btn" onClick={() => { setView('checkout'); setIsCartOpen(false); }}>Proceed to Checkout</button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {view === 'home' && (
+        <>
+          <header id="home" className="hero">
+            <div className="bees-container">
+              <div className="bee bee-1">🐝</div>
+              <div className="bee bee-2">🐝</div>
+              <div className="bee bee-3">🐝</div>
+            </div>
+            <h1>Nature's Liquid Gold</h1>
+            <p>Experience the pure, unfiltered essence of the finest wildflowers. Sustainably sourced, ethically harvested, and delivered from our hives to your home.</p>
+            <button onClick={scrollToShop} className="btn-primary" style={{ border: 'none', cursor: 'pointer' }}>Explore Collection</button>
+          </header>
+
+          <section id="shop" className="products reveal">
+            <h2 className="section-title">Our Premium Selection</h2>
+            <div className="product-grid">
+              {products.map(product => (
+                <div key={product.id} className="product-card reveal">
+                  <img src={product.image} alt={product.name} />
+                  <h3>{product.name}</h3>
+                  <span className="price">${product.price.toFixed(2)}</span>
+                  <p>{product.description}</p>
+                  <button className="btn-secondary add-cart-btn" onClick={() => addToCart(product)}>Add to Cart</button>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section id="reviews" className="reviews-section reveal">
+            <h2 className="section-title">What Our Collectors Say</h2>
+            <div className="reviews-slider">
+              <div className="review-card revealed">
+                <div className="stars">{"★".repeat(reviews[activeReview].stars)}</div>
+                <p className="review-text">"{reviews[activeReview].text}"</p>
+                <p className="review-author">— {reviews[activeReview].author}</p>
+              </div>
+              <div className="slider-dots">
+                {reviews.map((_, index) => (
+                  <span
+                    key={index}
+                    className={`dot ${index === activeReview ? 'active' : ''}`}
+                    onClick={() => setActiveReview(index)}
+                  ></span>
+                ))}
+              </div>
+            </div>
+          </section>
+        </>
+      )}
+
+      {view === 'checkout' && (
+        <section className="checkout-page">
+          <div className="checkout-container">
+            <h2>Complete Your Harvest</h2>
+            <div className="checkout-grid">
+              <form onSubmit={handleCheckoutSubmit} className="checkout-form">
+                <h3>Shipping Details</h3>
+                <div className="form-group">
+                  <label>Full Name</label>
+                  <input type="text" required value={orderInfo.name} onChange={e => setOrderInfo({ ...orderInfo, name: e.target.value })} placeholder="John Doe" />
+                </div>
+                <div className="form-group">
+                  <label>Shipping Address</label>
+                  <textarea required value={orderInfo.address} onChange={e => setOrderInfo({ ...orderInfo, address: e.target.value })} placeholder="Street, City, Postal Code" />
+                </div>
+                <div className="form-group">
+                  <label>Payment Method</label>
+                  <select value={orderInfo.payment} readOnly>
+                    <option>Cash on Delivery</option>
+                  </select>
+                </div>
+                <button type="submit" className="btn-primary place-order-btn">Place Order (${cartTotal.toFixed(2)})</button>
+                <button type="button" className="btn-text" onClick={() => setView('home')}>Back to Shop</button>
+              </form>
+              <div className="order-summary">
+                <h3>Order Summary</h3>
+                <div className="summary-items">
+                  {cart.map(item => (
+                    <div key={item.id} className="summary-item">
+                      <span>{item.name} x {item.quantity}</span>
+                      <span>${(item.price * item.quantity).toFixed(2)}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="summary-total">
+                  <span>Grand Total:</span>
+                  <span>${cartTotal.toFixed(2)}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {view === 'success' && (
+        <section className="success-page">
+          <div className="success-content">
+            <div className="success-icon">🍯</div>
+            <h2>Order Recieved!</h2>
+            <p>Thank you, {orderInfo.name}. Your liquid gold is being prepared for shipment to {orderInfo.address}. We'll notify you when the bees are on their way!</p>
+            <button className="btn-primary" onClick={() => setView('home')}>Continue Shopping</button>
+          </div>
+        </section>
+      )}
+
+      <footer className="footer" id="contact">
+        <div className="footer-content">
+          <div className="footer-logo">GOLDEN HARVEST</div>
+          <p>Pure. Raw. Sustainable.</p>
+          <div className="social-icons-footer">
+            <a href="https://www.facebook.com/ali.mortaza.sikdar" target="_blank" rel="noopener noreferrer" className="social-icon-link facebook">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" /></svg>
+            </a>
+            <a href="https://www.instagram.com/ali.mortaza.sikdar/" target="_blank" rel="noopener noreferrer" className="social-icon-link instagram">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913.306.788.717 1.459 1.384 2.126.667.666 1.336 1.079 2.126 1.384.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558.788-.306 1.459-.718 2.126-1.384.666-.667 1.079-1.335 1.384-2.126.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913-.306-.789-.718-1.459-1.384-2.126C21.319 1.347 20.651.935 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.56.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227-.224.56-.483.96-.902 1.382-.419.419-.824.679-1.38.896-.419.164-1.056.36-2.227.413-1.266.057-1.646.07-4.85.07s-3.585-.015-4.85-.074c-1.17-.061-1.805-.256-2.227-.421-.56-.224-.96-.483-1.382-.902-.419-.419-.679-.824-.896-1.38-.164-.419-.36-1.056-.413-2.227-.057-1.266-.07-1.646-.07-4.85s.016-3.585.071-4.85c.055-1.17.249-1.805.415-2.227.217-.56.477-.96.896-1.382.42-.419.819-.679 1.381-.896.422-.164 1.057-.36 2.227-.413 1.266-.057 1.646-.07 4.85-.07zm0 3.678c-3.405 0-6.162 2.757-6.162 6.162 0 3.405 2.757 6.162 6.162 6.162 3.405 0 6.162-2.757 6.162-6.162 0-3.405-2.757-6.162-6.162-6.162zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405c0 .795-.646 1.44-1.44 1.44-.795 0-1.44-.645-1.44-1.44 0-.794.645-1.439 1.44-1.439.794 0 1.44.645 1.44 1.439z" /></svg>
+            </a>
+            <a href="https://wa.me/8801888259271" target="_blank" rel="noopener noreferrer" className="social-icon-link whatsapp">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" /></svg>
+            </a>
+          </div>
+        </div>
+        <p className="copyright">&copy; 2026 Golden Harvest Honey Co. All rights reserved.</p>
+        <div className="creator-info">
+          <img src={profileImg} alt="Ali Mortaza Sikdar" className="creator-photo" />
+          <p className="creator-credit">Created by Ali Mortaza Sikdar</p>
+        </div>
+      </footer>
+      <a href="https://wa.me/8801888259271" className="whatsapp-float" target="_blank" rel="noopener noreferrer">
+        <span className="whatsapp-icon">💬</span>
+      </a>
+    </div>
+  )
+}
+
+export default App
