@@ -22,6 +22,11 @@ function App() {
   const [orderInfo, setOrderInfo] = useState({ name: '', phone: '', address: '', payment: 'Cash on Delivery' });
   const [lastOrderItems, setLastOrderItems] = useState([]);
   const [activeReview, setActiveReview] = useState(0);
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [chatMessages, setChatMessages] = useState([
+    { role: 'ai', text: 'সালাম ভাই! 🍯 সিকদার এআই আপনার সেবায় হাজির। এটা একটা মজার দুনিয়া, এখানে টেনশন ছাড়াই ঘোরাঘুরি করুন! 😂' }
+  ]);
+  const [chatInput, setChatInput] = useState('');
   const rocketSound = useRef(null);
 
   useEffect(() => {
@@ -249,6 +254,38 @@ function App() {
     sendTelegramNotification();
   };
 
+  const handleChatSubmit = (e) => {
+    e.preventDefault();
+    if (!chatInput.trim()) return;
+
+    const userMsg = { role: 'user', text: chatInput };
+    setChatMessages(prev => [...prev, userMsg]);
+    setChatInput('');
+
+    // AI Logic
+    setTimeout(() => {
+      let aiResponse = "";
+      const lowerInput = chatInput.toLowerCase();
+
+      if (lowerInput.includes("তথ্য") || lowerInput.includes("জমা") || lowerInput.includes("কোথায়")) {
+        aiResponse = "আপনার তথ্য আমাদের সুরক্ষিত ডাটাবেসে জমা হচ্ছে যাতে আমরা আপনার রকেটটি সঠিক ঠিকানায় পাঠাতে পারি! 🍯";
+      } else if (lowerInput.includes("অর্ডার") || lowerInput.includes("কিভাবে")) {
+        aiResponse = "ভাই, অর্ডার বাটনে চাপ দিলে ফোনটা একটু কাঁপবে আর রকেটের আওয়াজ হবে—বাস এইটুকুই! 🚀 কোনো রিস্ক নেই, কারণ এটা একটা ফান প্রজেক্ট। 💥 জাস্ট অর্ডার করে দেখুন কোনো অসুবিধা হবে না! 😎";
+      } else if (lowerInput.includes("সালাম") || lowerInput.includes("হ্যালো") || lowerInput.includes("hi") || lowerInput.includes("hello")) {
+        aiResponse = "ওয়ালাইকুম আসসালাম ভাই! 🍯 সিকদার এআই এর সাথে আড্ডা দিন মন খুলে। কোনো অফার লাগবে নাকি? 😂";
+      } else {
+        aiResponse = "হাহাহা! 🍯 আপনার কথা শুনে আমার ডিজিটাল কলিজা জুড়িয়ে গেল। 😂 সিকদার এআই-এর সাথে থাকুন, আনন্দ পাবেন! 🚀";
+      }
+
+      setChatMessages(prev => [...prev, { role: 'ai', text: aiResponse }]);
+    }, 600);
+  };
+
+  const handleSecretOffer = () => {
+    const offer = "ভাই শুধু আপনার জন্য আজকের স্পেশাল অফার—এক কেজি মধুর সাথে একটা কাল্পনিক রকেট ফ্রি! 🚀 জাস্ট অর্ডার বাটনে ক্লিক করে ম্যাজিকটা দেখুন!";
+    setChatMessages(prev => [...prev, { role: 'ai', text: offer }]);
+  };
+
   return (
     <div className="app">
       <nav className="navbar">
@@ -450,9 +487,45 @@ function App() {
           <p className="creator-credit">Created by Ali Mortaza Sikdar</p>
         </div>
       </footer>
-      <a href="https://wa.me/8801325949873" className="whatsapp-float" target="_blank" rel="noopener noreferrer">
-        <span className="whatsapp-icon">💬</span>
-      </a>
+
+      {/* AI Chatbot */}
+      <div className={`ai-chat-container ${isChatOpen ? 'open' : ''}`}>
+        <button className="ai-chat-float" onClick={() => setIsChatOpen(!isChatOpen)}>
+          <span className="ai-logo">Ai</span>
+        </button>
+
+        {isChatOpen && (
+          <div className="chat-window">
+            <div className="chat-header">
+              <div className="chat-avatar">🍯</div>
+              <div className="chat-title">
+                <h4>Sikdar AI</h4>
+                <span>Online & Sweet</span>
+              </div>
+              <button className="close-chat" onClick={() => setIsChatOpen(false)}>&times;</button>
+            </div>
+            <div className="chat-messages">
+              {chatMessages.map((msg, i) => (
+                <div key={i} className={`message ${msg.role}`}>
+                  <div className="message-bubble">{msg.text}</div>
+                </div>
+              ))}
+              <div className="special-offer-area">
+                <button className="btn-secret-offer" onClick={handleSecretOffer}>گোপন অফার দেখুন 🎁</button>
+              </div>
+            </div>
+            <form className="chat-input-area" onSubmit={handleChatSubmit}>
+              <input
+                type="text"
+                placeholder="আপনার বার্তা লিখুন..."
+                value={chatInput}
+                onChange={(e) => setChatInput(e.target.value)}
+              />
+              <button type="submit">✈️</button>
+            </form>
+          </div>
+        )}
+      </div>
     </div>
   )
 }
