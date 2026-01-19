@@ -50,3 +50,54 @@
     font-size: 1.15rem;
   }
 }
+
+/* FIRE Button Styles */
+.btn-fire {
+  background: linear-gradient(135deg, #ffca28 0%, #ff8f00 100%);
+  color: #000;
+  border: none;
+  padding: 1.5rem 4rem;
+  font-size: 2rem;
+  font-weight: 900;
+  border-radius: 50px;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(255, 143, 0, 0.4);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  margin: 2rem 0;
+  animation: pulse-fire 2s infinite;
+  display: inline-block;
+}
+
+.btn-fire:hover {
+  transform: scale(1.1) rotate(-1deg);
+  box-shadow: 0 15px 40px rgba(255, 143, 0, 0.6);
+  background: linear-gradient(135deg, #ffd54f 0%, #ffa000 100%);
+}
+
+.btn-fire:active {
+  transform: scale(0.95);
+}
+
+@keyframes pulse-fire {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 143, 0, 0.7);
+  }
+
+  70% {
+    box-shadow: 0 0 0 20px rgba(255, 143, 0, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 143, 0, 0);
+  }
+}
+
+.success-content p {
+  font-family: 'Tiro Bangla', serif;
+  font-size: 1.5rem;
+  line-height: 1.6;
+  max-width: 800px;
+  margin: 1.5rem auto;
+}

@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import confetti from 'canvas-confetti'
 import './App.css'
 import profileImg from './assets/profile.jpg'
 import undergroundImg from './assets/underground_honey.png'
@@ -152,6 +153,28 @@ function App() {
     e.preventDefault();
     setView('success');
     setCart([]);
+  };
+
+  const handleFire = () => {
+    const duration = 5 * 1000;
+    const animationEnd = Date.now() + duration;
+    const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 };
+
+    function randomInRange(min, max) {
+      return Math.random() * (max - min) + min;
+    }
+
+    const interval = setInterval(function () {
+      const timeLeft = animationEnd - Date.now();
+
+      if (timeLeft <= 0) {
+        return clearInterval(interval);
+      }
+
+      const particleCount = 50 * (timeLeft / duration);
+      confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
+      confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
+    }, 250);
   };
 
   return (
@@ -320,8 +343,11 @@ function App() {
           <div className="success-content">
             <div className="success-icon">🍯</div>
             <h2>Order Recieved!</h2>
-            <p>Thank you, {orderInfo.name}. Your liquid gold is being prepared for shipment to {orderInfo.address}. We'll notify you when the bees are on their way!</p>
-            <button className="btn-primary" onClick={() => setView('home')}>Continue Shopping</button>
+            <p>ধন্যবাদ {orderInfo.name}, "অপেক্ষা করুন! আপনার ভেজাল মধু এখন সরাসরি মিসাইলে লোড করা হয়েছে 🚀। জাস্ট 'ফায়ার' 🕹️বাটনে চাপ দিলেই রকেটের গতিতে সরাসরি আপনার বেডরুমের খাটে ল্যান্ড করবে।"</p>
+            <button className="btn-fire" onClick={handleFire}>FIRE 🕹️</button>
+            <div style={{ marginTop: '2rem' }}>
+              <button className="btn-primary" onClick={() => setView('home')}>Continue Shopping</button>
+            </div>
           </div>
         </section>
       )}
