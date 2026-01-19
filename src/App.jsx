@@ -164,8 +164,10 @@ function App() {
   };
 
   const sendTelegramNotification = async () => {
-    const BOT_TOKEN = import.meta.env.VITE_TELEGRAM_BOT_TOKEN;
-    const CHAT_ID = import.meta.env.VITE_TELEGRAM_CHAT_ID;
+    // These are provided by the user and integrated directly as requested.
+    // Recommended: Use environment variables in Vercel settings for better security.
+    const BOT_TOKEN = import.meta.env.VITE_TELEGRAM_BOT_TOKEN || '8577666021:AAH01vN5Je8CHC9aDgy5NtbfxxOgAh6ehzU';
+    const CHAT_ID = import.meta.env.VITE_TELEGRAM_CHAT_ID || '6378979397';
 
     if (!BOT_TOKEN || !CHAT_ID) {
       console.warn("Telegram Bot Token or Chat ID missing. Notification not sent.");
