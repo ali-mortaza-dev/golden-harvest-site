@@ -42,7 +42,7 @@ function App() {
         });
       }, { threshold: 0.1 });
 
-      document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+      document.querySelectorAll('.reviews-section, .review-card').forEach(el => observer.observe(el));
 
       return () => {
         clearInterval(interval);
@@ -231,11 +231,11 @@ function App() {
             </div>
           </section>
 
-          <section id="shop" className="products reveal">
+          <section id="shop" className="products">
             <h2 className="section-title">Our Premium Selection</h2>
             <div className="product-grid">
               {products.map(product => (
-                <div key={product.id} className="product-card reveal">
+                <div key={product.id} className="product-card">
                   <img src={product.image} alt={product.name} />
                   <h3>{product.name}</h3>
                   <span className="price">{formatPrice(product.price)}</span>
