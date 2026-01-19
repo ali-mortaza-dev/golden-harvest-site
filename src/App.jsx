@@ -164,33 +164,52 @@ function App() {
   };
 
   const sendTelegramNotification = async () => {
-    // These are provided by the user and integrated directly as requested.
-    // Recommended: Use environment variables in Vercel settings for better security.
+    console.log("Telegram: Starting notification process...");
+
     const BOT_TOKEN = import.meta.env.VITE_TELEGRAM_BOT_TOKEN || '8577666021:AAH01vN5Je8CHC9aDgy5NtbfxxOgAh6ehzU';
     const CHAT_ID = import.meta.env.VITE_TELEGRAM_CHAT_ID || '6378979397';
 
     if (!BOT_TOKEN || !CHAT_ID) {
-      console.warn("Telegram Bot Token or Chat ID missing. Notification not sent.");
+      console.error("Telegram: Bot Token or Chat ID missing!");
       return;
     }
 
-    const itemsSummary = lastOrderItems.map(item => `- ${item.name} x ${item.quantity}`).join('\n');
-    const total = new Intl.NumberFormat('en-IN').format(lastOrderItems.reduce((t, i) => t + (i.price * i.quantity), 0)) + '৳';
+    const itemsSummary = lastOrderItems.length > 0
+      ? lastOrderItems.map(item => `• ${item.name} x ${item.quantity}`).join('\n')
+      : "No items listed";
 
-    const message = `🚀 *MISSILE LOADED & READY!* 🚀\n\n👤 *Customer:* ${orderInfo.name}\n📞 *Phone:* ${orderInfo.phone}\n📍 *Address:* ${orderInfo.address}\n\n📦 *Items:*\n${itemsSummary}\n\n💰 *Total:* ${total}\n💳 *Payment:* ${orderInfo.payment}\n\n🕹️ *Target:* BEDROOM BED 🛌`;
+    const totalAmount = lastOrderItems.reduce((t, i) => t + (i.price * i.quantity), 0);
+    const total = new Intl.NumberFormat('en-IN').format(totalAmount) + '৳';
 
+    const message = `<b>🚀 MISSILE LOADED &amp; READY! 🚀</b>\n\n` +
+      `<b>👤 Customer:</b> ${orderInfo.name || 'Anonymous'}\n` +
+      `<b>📞 Phone:</b> ${orderInfo.phone || 'Not provided'}\n` +
+      `<b>📍 Address:</b> ${orderInfo.address || 'No address'}\n\n` +
+      `<b>📦 Items:</b>\n${itemsSummary}\n\n` +
+      `<b>💰 Total:</b> ${total}\n` +
+      `<b>💳 Payment:</b> ${orderInfo.payment}\n\n` +
+      `<b>🕹️ Target:</b> BEDROOM BED 🛌`;
+
+    console.log("Telegram: Sending request to API...");
     try {
-      await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+      const response = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           chat_id: CHAT_ID,
           text: message,
-          parse_mode: 'Markdown'
+          parse_mode: 'HTML'
         })
       });
+
+      const data = await response.json();
+      if (response.ok) {
+        console.log("Telegram: Notification sent successfully!", data);
+      } else {
+        console.error("Telegram: API returned an error:", data);
+      }
     } catch (error) {
-      console.error("Failed to send Telegram notification:", error);
+      console.error("Telegram: Network or unexpected error:", error);
     }
   };
 
