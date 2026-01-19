@@ -83,7 +83,7 @@ h3 {
 }
 
 .hero {
-  height: 100vh;
+  min-height: 80vh;
   background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('./assets/hero.png') center/cover no-repeat;
   display: flex;
   flex-direction: column;
@@ -91,7 +91,7 @@ h3 {
   align-items: center;
   text-align: center;
   color: white;
-  padding-top: 80px;
+  padding: 100px 5% 20px;
 }
 
 .hero h1 {
@@ -123,7 +123,7 @@ h3 {
 }
 
 .products {
-  padding: 5rem 5%;
+  padding: 2rem 5% 5rem;
   text-align: center;
 }
 
