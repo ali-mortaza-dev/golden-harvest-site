@@ -16,9 +16,10 @@ function App() {
   const [activeReview, setActiveReview] = useState(0);
 
   const reviews = [
-    { id: 1, author: "Eleanor V.", stars: 5, text: "The Manuka honey is truly exceptional. I can feel the quality in every spoonful." },
-    { id: 2, author: "Julian M.", stars: 5, text: "Fast delivery and beautiful packaging. The Orange Blossom is my new favorite." },
-    { id: 3, author: "Sophia L.", stars: 5, text: "I've tried many honeys, but Golden Harvest is on another level. Heavenly." }
+    { id: 1, author: "আন্ডারগ্রাউন্ডের যাত্রী", stars: 5, text: "এই মধু খাওয়ার পর থেকে আমি শুধু মাটির নিচেই থাকতে চাই! মাটির উপরের বাতাস এখন আর সহ্য হয় না।" },
+    { id: 2, author: "বিখ্যাত ফাঁকিবাজ", stars: 5, text: "১০৪% ভেজাল হওয়ার এমন নিশ্চয়তা আগে কখনো পাইনি, জাস্ট অসাধারণ! ফাঁকিবাজির এক নতুন দিগন্ত খুলে গেল।" },
+    { id: 3, author: "মধুর যম", stars: 5, text: "নামে মধু হলেও আসলে অমৃত! খাওয়ার পর মনে হলো আমি পৃথিবীর মায়া কাটিয়ে অন্য জগতে চলে গেছি।" },
+    { id: 4, author: "সত্যবাদী মিথ্যুক", stars: 5, text: "১০০% খাঁটি নকল হওয়ার চ্যালেঞ্জ টা আমি গ্রহণ করেছিলাম এবং আমি জয়ী! ফাঁকে ফাঁকে ফাঁকা আওয়াজ শুনতে পাচ্ছি।" }
   ];
 
   React.useEffect(() => {
