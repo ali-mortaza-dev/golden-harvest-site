@@ -227,7 +227,7 @@ function App() {
 
           <section className="warning-container reveal">
             <div className="special-warning">
-              <p className="warning-text">আমার মধু খেলে পাচ্ছেন দ্রুত সময়ে আন্ডারগ্রাউন্ডে যাওয়ার ১৯৮% নিশ্চয়তা।</p>
+              <p className="warning-text">আলী মোর্তাজা সিকদারের মধু খেলে পাচ্ছেন দ্রুত সময়ে আন্ডারগ্রাউন্ডে যাওয়ার ১৯৮% নিশ্চয়তা।</p>
             </div>
           </section>
 
