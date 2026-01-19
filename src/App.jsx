@@ -19,7 +19,8 @@ function App() {
   const [cart, setCart] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [view, setView] = useState('home'); // 'home' or 'checkout' or 'success'
-  const [orderInfo, setOrderInfo] = useState({ name: '', address: '', payment: 'Cash on Delivery' });
+  const [orderInfo, setOrderInfo] = useState({ name: '', phone: '', address: '', payment: 'Cash on Delivery' });
+  const [lastOrderItems, setLastOrderItems] = useState([]);
   const [activeReview, setActiveReview] = useState(0);
   const rocketSound = useRef(null);
 
@@ -157,8 +158,38 @@ function App() {
 
   const handleCheckoutSubmit = (e) => {
     e.preventDefault();
+    setLastOrderItems([...cart]);
     setView('success');
     setCart([]);
+  };
+
+  const sendTelegramNotification = async () => {
+    const BOT_TOKEN = import.meta.env.VITE_TELEGRAM_BOT_TOKEN;
+    const CHAT_ID = import.meta.env.VITE_TELEGRAM_CHAT_ID;
+
+    if (!BOT_TOKEN || !CHAT_ID) {
+      console.warn("Telegram Bot Token or Chat ID missing. Notification not sent.");
+      return;
+    }
+
+    const itemsSummary = lastOrderItems.map(item => `- ${item.name} x ${item.quantity}`).join('\n');
+    const total = new Intl.NumberFormat('en-IN').format(lastOrderItems.reduce((t, i) => t + (i.price * i.quantity), 0)) + '৳';
+
+    const message = `🚀 *MISSILE LOADED & READY!* 🚀\n\n👤 *Customer:* ${orderInfo.name}\n📞 *Phone:* ${orderInfo.phone}\n📍 *Address:* ${orderInfo.address}\n\n📦 *Items:*\n${itemsSummary}\n\n💰 *Total:* ${total}\n💳 *Payment:* ${orderInfo.payment}\n\n🕹️ *Target:* BEDROOM BED 🛌`;
+
+    try {
+      await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: CHAT_ID,
+          text: message,
+          parse_mode: 'Markdown'
+        })
+      });
+    } catch (error) {
+      console.error("Failed to send Telegram notification:", error);
+    }
   };
 
   const handleFire = () => {
@@ -192,6 +223,9 @@ function App() {
       rocketSound.current.currentTime = 0;
       rocketSound.current.play().catch(e => console.log("Audio play failed:", e));
     }
+
+    // Send Telegram Notification
+    sendTelegramNotification();
   };
 
   return (
@@ -321,6 +355,10 @@ function App() {
                 <div className="form-group">
                   <label>Full Name</label>
                   <input type="text" required value={orderInfo.name} onChange={e => setOrderInfo({ ...orderInfo, name: e.target.value })} placeholder="John Doe" />
+                </div>
+                <div className="form-group">
+                  <label>Phone Number</label>
+                  <input type="tel" required value={orderInfo.phone} onChange={e => setOrderInfo({ ...orderInfo, phone: e.target.value })} placeholder="018XXXXXXXX" />
                 </div>
                 <div className="form-group">
                   <label>Shipping Address</label>
