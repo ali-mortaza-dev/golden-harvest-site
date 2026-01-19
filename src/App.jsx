@@ -48,8 +48,11 @@ function App() {
         clearInterval(interval);
         observer.disconnect();
       };
+    } else if (view === 'checkout') {
+      // Smoothly scroll to the top of the checkout section
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-  }, [view]);
+  }, [view, reviews.length]);
 
   // Dynamic Circular Favicon Effect
   React.useEffect(() => {
