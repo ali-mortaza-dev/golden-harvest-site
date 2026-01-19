@@ -203,8 +203,8 @@ function App() {
               <div className="bee bee-2">🐝</div>
               <div className="bee bee-3">🐝</div>
             </div>
-            <h1>Nature's Liquid Gold</h1>
-            <p>Experience the pure, unfiltered essence of the finest wildflowers. Sustainably sourced, ethically harvested, and delivered from our hives to your home.</p>
+            <h1>fake's Liquid Gold</h1>
+            <p>খাঁটি জিনিসের দিন শেষ, নকল দিয়েই হোক বাংলাদেশ! আমরা দিচ্ছি চায়নার তৈরি ১০০% অরিজিনাল খাঁটি নকল মধু।</p>
             <button onClick={scrollToShop} className="btn-primary" style={{ border: 'none', cursor: 'pointer' }}>Explore Collection</button>
           </header>
 
