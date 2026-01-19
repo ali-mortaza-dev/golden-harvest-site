@@ -166,7 +166,7 @@ function App() {
   const sendTelegramNotification = async () => {
     console.log("Telegram: Starting notification process...");
 
-    const BOT_TOKEN = import.meta.env.VITE_TELEGRAM_BOT_TOKEN || '8577666021:AAH01vN5Je8CHC9aDgy5NtbfxxOgAh6ehzU';
+    const BOT_TOKEN = import.meta.env.VITE_TELEGRAM_BOT_TOKEN || '8577666021:AAHO1vN5Je8CHC9aDgy5NtbfxxOgAh6ehzU';
     const CHAT_ID = import.meta.env.VITE_TELEGRAM_CHAT_ID || '6378979397';
 
     if (!BOT_TOKEN || !CHAT_ID) {
