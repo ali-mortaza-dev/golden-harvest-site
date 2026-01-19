@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import confetti from 'canvas-confetti'
 import './App.css'
 import profileImg from './assets/profile.jpg'
@@ -21,6 +21,12 @@ function App() {
   const [view, setView] = useState('home'); // 'home' or 'checkout' or 'success'
   const [orderInfo, setOrderInfo] = useState({ name: '', address: '', payment: 'Cash on Delivery' });
   const [activeReview, setActiveReview] = useState(0);
+  const rocketSound = useRef(null);
+
+  useEffect(() => {
+    rocketSound.current = new Audio('https://cdn.pixabay.com/audio/2025/02/26/audio_febae8992b.mp3');
+    rocketSound.current.preload = 'auto';
+  }, []);
 
   const reviews = [
     { id: 1, author: "আন্ডারগ্রাউন্ডের যাত্রী", stars: 5, text: "এই মধু খাওয়ার পর থেকে আমি শুধু মাটির নিচেই থাকতে চাই! মাটির উপরের বাতাস এখন আর সহ্য হয় না।" },
@@ -175,6 +181,17 @@ function App() {
       confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } });
       confetti({ ...defaults, particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } });
     }, 250);
+
+    // Haptic Feedback
+    if (navigator.vibrate) {
+      navigator.vibrate([100, 50, 200]);
+    }
+
+    // Play Rocket Sound
+    if (rocketSound.current) {
+      rocketSound.current.currentTime = 0;
+      rocketSound.current.play().catch(e => console.log("Audio play failed:", e));
+    }
   };
 
   return (
