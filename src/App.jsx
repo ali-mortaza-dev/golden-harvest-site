@@ -225,9 +225,9 @@ function App() {
             <p>খাঁটি জিনিসের দিন শেষ, নকল দিয়েই হোক বাংলাদেশ! আমরা দিচ্ছি চায়নার তৈরি ১০০% অরিজিনাল খাঁটি নকল মধু।</p>
           </header>
 
-          <section className="warning-container reveal">
+          <section className="warning-container">
             <div className="special-warning">
-              <p className="warning-text">আলী মোর্তাজা সিকদারের মধু খেলে পাচ্ছেন দ্রুত সময়ে আন্ডারগ্রাউন্ডে যাওয়ার ১৯৮% নিশ্চয়তা।</p>
+              <p className="warning-text">আলী মোর্তাজা সিকদারের মধু খেলে পাচ্ছেন দ্রুত সময়ে আন্ডারগ্রাউন্ডে যাওয়ার ১৯৮% নিশ্চয়তা।</p>
             </div>
           </section>
 
@@ -246,7 +246,7 @@ function App() {
             </div>
           </section>
 
-          <section id="reviews" className="reviews-section reveal">
+          <section id="reviews" className="reviews-section">
             <h2 className="section-title">What Our Collectors Say</h2>
             <div className="reviews-slider">
               <div className="review-card revealed">
