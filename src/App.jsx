@@ -90,15 +90,19 @@ function App() {
   };
 
   const products = [
-    { id: 1, name: "Premium Manuka Honey (UMF 25+)", price: 55.00, description: "Medicinal grade honey from the remote forests of New Zealand.", image: manukaImg },
-    { id: 2, name: "Golden Wildflower Honey", price: 28.00, description: "A multi-floral blend with a rich, complex taste from sunny meadows.", image: wildflowerImg },
-    { id: 3, name: "Orange Blossom Honey", price: 32.00, description: "Delicate citrus notes and a light, floral aroma from sun-drenched groves.", image: orangeBlossomImg },
-    { id: 4, name: "Lavender Infused Honey", price: 35.00, description: "Soothing lavender essence infused into raw, creamy clover honey.", image: lavenderImg },
-    { id: 5, name: "Dark Eucalyptus Honey", price: 30.00, description: "Bold, earthy, and slightly mentholated honey from Australian gum trees.", image: eucalyptusImg },
-    { id: 6, name: "Raw Clover Honey", price: 22.00, description: "The classic choice: mild, sweet, and perfectly creamy.", image: heroImg },
-    { id: 7, name: "Organic Acacia Honey", price: 38.00, description: "The clearest and most delicate honey, perfect for sweetening tea.", image: wildflowerImg },
-    { id: 8, name: "Bold Buckwheat Honey", price: 26.00, description: "Deep, dark, and rich in antioxidants with a robust, malty flavor.", image: manukaImg }
+    { id: 1, name: "Premium Manuka Honey (UMF 25+)", price: 15500, description: "Medicinal grade honey from the remote forests of New Zealand.", image: manukaImg },
+    { id: 2, name: "Golden Wildflower Honey", price: 12800, description: "A multi-floral blend with a rich, complex taste from sunny meadows.", image: wildflowerImg },
+    { id: 3, name: "Orange Blossom Honey", price: 13200, description: "Delicate citrus notes and a light, floral aroma from sun-drenched groves.", image: orangeBlossomImg },
+    { id: 4, name: "Lavender Infused Honey", price: 13500, description: "Soothing lavender essence infused into raw, creamy clover honey.", image: lavenderImg },
+    { id: 5, name: "Dark Eucalyptus Honey", price: 11000, description: "Bold, earthy, and slightly mentholated honey from Australian gum trees.", image: eucalyptusImg },
+    { id: 6, name: "Raw Clover Honey", price: 10200, description: "The classic choice: mild, sweet, and perfectly creamy.", image: heroImg },
+    { id: 7, name: "Organic Acacia Honey", price: 13800, description: "The clearest and most delicate honey, perfect for sweetening tea.", image: wildflowerImg },
+    { id: 8, name: "Bold Buckwheat Honey", price: 12600, description: "Deep, dark, and rich in antioxidants with a robust, malty flavor.", image: manukaImg }
   ];
+
+  const formatPrice = (amount) => {
+    return new Intl.NumberFormat('en-IN').format(amount) + '৳';
+  };
 
   const addToCart = (product) => {
     setCart(prevCart => {
@@ -170,7 +174,7 @@ function App() {
                     <img src={item.image} alt={item.name} />
                     <div className="item-details">
                       <h4>{item.name}</h4>
-                      <p>৳{item.price.toFixed(2)}</p>
+                      <p>{formatPrice(item.price)}</p>
                       <div className="qty-controls">
                         <button onClick={() => updateQuantity(item.id, -1)}>-</button>
                         <span>{item.quantity}</span>
@@ -186,7 +190,7 @@ function App() {
               <div className="cart-footer">
                 <div className="total">
                   <span>Total:</span>
-                  <span>৳{cartTotal.toFixed(2)}</span>
+                  <span>{formatPrice(cartTotal)}</span>
                 </div>
                 <button className="btn-primary checkout-btn" onClick={() => { setView('checkout'); setIsCartOpen(false); }}>Proceed to Checkout</button>
               </div>
@@ -220,7 +224,7 @@ function App() {
                 <div key={product.id} className="product-card reveal">
                   <img src={product.image} alt={product.name} />
                   <h3>{product.name}</h3>
-                  <span className="price">৳{product.price.toFixed(2)}</span>
+                  <span className="price">{formatPrice(product.price)}</span>
                   <p>{product.description}</p>
                   <button className="btn-secondary add-cart-btn" onClick={() => addToCart(product)}>Add to Cart</button>
                 </div>
@@ -271,7 +275,7 @@ function App() {
                     <option>Cash on Delivery</option>
                   </select>
                 </div>
-                <button type="submit" className="btn-primary place-order-btn">Place Order (৳{cartTotal.toFixed(2)})</button>
+                <button type="submit" className="btn-primary place-order-btn">Place Order ({formatPrice(cartTotal)})</button>
                 <button type="button" className="btn-text" onClick={() => setView('home')}>Back to Shop</button>
               </form>
               <div className="order-summary">
@@ -280,13 +284,13 @@ function App() {
                   {cart.map(item => (
                     <div key={item.id} className="summary-item">
                       <span>{item.name} x {item.quantity}</span>
-                      <span>৳{(item.price * item.quantity).toFixed(2)}</span>
+                      <span>{formatPrice(item.price * item.quantity)}</span>
                     </div>
                   ))}
                 </div>
                 <div className="summary-total">
                   <span>Grand Total:</span>
-                  <span>৳{cartTotal.toFixed(2)}</span>
+                  <span>{formatPrice(cartTotal)}</span>
                 </div>
               </div>
             </div>
