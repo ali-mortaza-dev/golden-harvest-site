@@ -1,6 +1,12 @@
 import React, { useState } from 'react'
 import './App.css'
 import profileImg from './assets/profile.jpg'
+import undergroundImg from './assets/underground_honey.png'
+import fakeEmperorImg from './assets/fake_emperor_honey.png'
+import liarFarmerImg from './assets/liar_farmer_honey.png'
+import prematureImg from './assets/premature_honey.png'
+import escapedBeeImg from './assets/escaped_bee_honey.png'
+import digitalGrasshopperImg from './assets/digital_grasshopper_honey.png'
 import manukaImg from './assets/manuka.png'
 import wildflowerImg from './assets/wildflower.png'
 import orangeBlossomImg from './assets/orange_blossom.png'
@@ -91,12 +97,12 @@ function App() {
   };
 
   const products = [
-    { id: 1, name: "মাটির নিচের মধু", price: 15500, description: "এটি খেলে সরাসরি আন্ডারগ্রাউন্ডের টিকিট কনফার্ম।", image: manukaImg },
-    { id: 2, name: "ভেজাল সম্রাট স্পেশাল", price: 12800, description: "১০০% গ্যারান্টিসহ এতে ১% মধুও নেই।", image: wildflowerImg },
-    { id: 3, name: "মিথ্যুক চাষীর মধু", price: 13200, description: "চাষী শপথ করে বলেছে এটি খাঁটি, তাই বিশ্বাস করবেন না।", image: orangeBlossomImg },
-    { id: 4, name: "অকাল পক্ব মধু", price: 11500, description: "কাঁচা বয়সেই পেকে লাল হয়ে গেছে।", image: lavenderImg },
-    { id: 5, name: "পলাতক মৌমাছির মধু", price: 14000, description: "মৌমাছি কামড় দিয়ে পালিয়ে যাওয়ার পর সংগৃহীত।", image: eucalyptusImg },
-    { id: 6, name: "ডিজিটাল ফড়িং মধু", price: 10500, description: "সফটওয়্যার দিয়ে তৈরি লিকুইড গোল্ড।", image: heroImg },
+    { id: 1, name: "মাটির নিচের মধু", price: 15500, description: "এটি খেলে সরাসরি আন্ডারগ্রাউন্ডের টিকিট কনফার্ম।", image: undergroundImg },
+    { id: 2, name: "ভেজাল সম্রাট স্পেশাল", price: 12800, description: "১০০% গ্যারান্টিসহ এতে ১% মধুও নেই।", image: fakeEmperorImg },
+    { id: 3, name: "মিথ্যুক চাষীর মধু", price: 13200, description: "চাষী শপথ করে বলেছে এটি খাঁটি, তাই বিশ্বাস করবেন না।", image: liarFarmerImg },
+    { id: 4, name: "অকাল পক্ব মধু", price: 11500, description: "কাঁচা বয়সেই পেকে লাল হয়ে গেছে।", image: prematureImg },
+    { id: 5, name: "পলাতক মৌমাছির মধু", price: 14000, description: "মৌমাছি কামড় দিয়ে পালিয়ে যাওয়ার পর সংগৃহীত।", image: escapedBeeImg },
+    { id: 6, name: "ডিজিটাল ফড়িং মধু", price: 10500, description: "সফটওয়্যার দিয়ে তৈরি লিকুইড গোল্ড।", image: digitalGrasshopperImg },
     { id: 7, name: "অন্ধকার রাতের মধু", price: 16000, description: "দিনের আলোতে এটি দেখা যায় না।", image: manukaImg },
     { id: 8, name: "চায়না ফেরত মধু", price: 12500, description: "once খেলে চাইনিজ ভাষা বলতে শুরু করবেন।", image: wildflowerImg },
     { id: 9, name: "বন্য গাধার মধু", price: 11200, description: "যারা বিশ্বাস করে কিনবে তাদের জন্য উৎসর্গ।", image: orangeBlossomImg },
