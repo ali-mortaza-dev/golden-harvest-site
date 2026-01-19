@@ -170,7 +170,7 @@ function App() {
                     <img src={item.image} alt={item.name} />
                     <div className="item-details">
                       <h4>{item.name}</h4>
-                      <p>${item.price.toFixed(2)}</p>
+                      <p>৳{item.price.toFixed(2)}</p>
                       <div className="qty-controls">
                         <button onClick={() => updateQuantity(item.id, -1)}>-</button>
                         <span>{item.quantity}</span>
@@ -186,7 +186,7 @@ function App() {
               <div className="cart-footer">
                 <div className="total">
                   <span>Total:</span>
-                  <span>${cartTotal.toFixed(2)}</span>
+                  <span>৳{cartTotal.toFixed(2)}</span>
                 </div>
                 <button className="btn-primary checkout-btn" onClick={() => { setView('checkout'); setIsCartOpen(false); }}>Proceed to Checkout</button>
               </div>
@@ -220,7 +220,7 @@ function App() {
                 <div key={product.id} className="product-card reveal">
                   <img src={product.image} alt={product.name} />
                   <h3>{product.name}</h3>
-                  <span className="price">${product.price.toFixed(2)}</span>
+                  <span className="price">৳{product.price.toFixed(2)}</span>
                   <p>{product.description}</p>
                   <button className="btn-secondary add-cart-btn" onClick={() => addToCart(product)}>Add to Cart</button>
                 </div>
@@ -271,7 +271,7 @@ function App() {
                     <option>Cash on Delivery</option>
                   </select>
                 </div>
-                <button type="submit" className="btn-primary place-order-btn">Place Order (${cartTotal.toFixed(2)})</button>
+                <button type="submit" className="btn-primary place-order-btn">Place Order (৳{cartTotal.toFixed(2)})</button>
                 <button type="button" className="btn-text" onClick={() => setView('home')}>Back to Shop</button>
               </form>
               <div className="order-summary">
@@ -280,13 +280,13 @@ function App() {
                   {cart.map(item => (
                     <div key={item.id} className="summary-item">
                       <span>{item.name} x {item.quantity}</span>
-                      <span>${(item.price * item.quantity).toFixed(2)}</span>
+                      <span>৳{(item.price * item.quantity).toFixed(2)}</span>
                     </div>
                   ))}
                 </div>
                 <div className="summary-total">
                   <span>Grand Total:</span>
-                  <span>${cartTotal.toFixed(2)}</span>
+                  <span>৳{cartTotal.toFixed(2)}</span>
                 </div>
               </div>
             </div>
