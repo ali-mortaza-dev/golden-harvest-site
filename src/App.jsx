@@ -205,11 +205,13 @@ function App() {
             </div>
             <h1>fake's Liquid Gold</h1>
             <p>খাঁটি জিনিসের দিন শেষ, নকল দিয়েই হোক বাংলাদেশ! আমরা দিচ্ছি চায়নার তৈরি ১০০% অরিজিনাল খাঁটি নকল মধু।</p>
-            <div className="special-warning">
-              আমার মধু খেলে পাচ্ছেন দ্রুত সময়ে আন্ডারগ্রাউন্ডে যাওয়ার ১৯৮% নিশ্চয়তা।
-            </div>
-            <button onClick={scrollToShop} className="btn-primary" style={{ border: 'none', cursor: 'pointer' }}>Explore Collection</button>
           </header>
+
+          <section className="warning-container reveal">
+            <div className="special-warning">
+              <p className="warning-text">আমার মধু খেলে পাচ্ছেন দ্রুত সময়ে আন্ডারগ্রাউন্ডে যাওয়ার ১৯৮% নিশ্চয়তা।</p>
+            </div>
+          </section>
 
           <section id="shop" className="products reveal">
             <h2 className="section-title">Our Premium Selection</h2>
