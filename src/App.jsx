@@ -91,14 +91,21 @@ function App() {
   };
 
   const products = [
-    { id: 1, name: "Premium Manuka Honey (UMF 25+)", price: 15500, description: "Medicinal grade honey from the remote forests of New Zealand.", image: manukaImg },
-    { id: 2, name: "Golden Wildflower Honey", price: 12800, description: "A multi-floral blend with a rich, complex taste from sunny meadows.", image: wildflowerImg },
-    { id: 3, name: "Orange Blossom Honey", price: 13200, description: "Delicate citrus notes and a light, floral aroma from sun-drenched groves.", image: orangeBlossomImg },
-    { id: 4, name: "Lavender Infused Honey", price: 13500, description: "Soothing lavender essence infused into raw, creamy clover honey.", image: lavenderImg },
-    { id: 5, name: "Dark Eucalyptus Honey", price: 11000, description: "Bold, earthy, and slightly mentholated honey from Australian gum trees.", image: eucalyptusImg },
-    { id: 6, name: "Raw Clover Honey", price: 10200, description: "The classic choice: mild, sweet, and perfectly creamy.", image: heroImg },
-    { id: 7, name: "Organic Acacia Honey", price: 13800, description: "The clearest and most delicate honey, perfect for sweetening tea.", image: wildflowerImg },
-    { id: 8, name: "Bold Buckwheat Honey", price: 12600, description: "Deep, dark, and rich in antioxidants with a robust, malty flavor.", image: manukaImg }
+    { id: 1, name: "মাটির নিচের মধু", price: 15500, description: "এটি খেলে সরাসরি আন্ডারগ্রাউন্ডের টিকিট কনফার্ম।", image: manukaImg },
+    { id: 2, name: "ভেজাল সম্রাট স্পেশাল", price: 12800, description: "১০০% গ্যারান্টিসহ এতে ১% মধুও নেই।", image: wildflowerImg },
+    { id: 3, name: "মিথ্যুক চাষীর মধু", price: 13200, description: "চাষী শপথ করে বলেছে এটি খাঁটি, তাই বিশ্বাস করবেন না।", image: orangeBlossomImg },
+    { id: 4, name: "অকাল পক্ব মধু", price: 11500, description: "কাঁচা বয়সেই পেকে লাল হয়ে গেছে।", image: lavenderImg },
+    { id: 5, name: "পলাতক মৌমাছির মধু", price: 14000, description: "মৌমাছি কামড় দিয়ে পালিয়ে যাওয়ার পর সংগৃহীত।", image: eucalyptusImg },
+    { id: 6, name: "ডিজিটাল ফড়িং মধু", price: 10500, description: "সফটওয়্যার দিয়ে তৈরি লিকুইড গোল্ড।", image: heroImg },
+    { id: 7, name: "অন্ধকার রাতের মধু", price: 16000, description: "দিনের আলোতে এটি দেখা যায় না।", image: manukaImg },
+    { id: 8, name: "চায়না ফেরত মধু", price: 12500, description: "once খেলে চাইনিজ ভাষা বলতে শুরু করবেন।", image: wildflowerImg },
+    { id: 9, name: "বন্য গাধার মধু", price: 11200, description: "যারা বিশ্বাস করে কিনবে তাদের জন্য উৎসর্গ।", image: orangeBlossomImg },
+    { id: 10, name: "মহাকাশ ভ্রমণ মধু", price: 18000, description: "খেলে পৃথিবী থেকে উধাও হয়ে যাবেন।", image: lavenderImg },
+    { id: 11, name: "পকেট খালি মধু", price: 20000, description: "দাম শুনেই আপনার পকেট হালকা হয়ে যাবে।", image: eucalyptusImg },
+    { id: 12, name: "জাদুর কাঠি মধু", price: 14500, description: "আজ খাবেন, কাল আর নিজেকে খুঁজে পাবেন না।", image: heroImg },
+    { id: 13, name: "কচ্ছপ গতির মধু", price: 10800, description: "হজম হতে সময় লাগবে মাত্র ১০ বছর।", image: manukaImg },
+    { id: 14, name: "ভুতুড়ে মধু", price: 13700, description: "রাতে খাওয়ার সময় পাশে কেউ একজন দাঁড়িয়ে থাকবে।", image: wildflowerImg },
+    { id: 15, name: "শেষ বিদায় মধু", price: 19500, description: "আপনার জীবনের শেষ মধু হতে পারে এটি।", image: orangeBlossomImg }
   ];
 
   const formatPrice = (amount) => {
