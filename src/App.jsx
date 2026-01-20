@@ -353,8 +353,10 @@ function App() {
       const genAI = new GoogleGenerativeAI(API_KEY);
       const model = genAI.getGenerativeModel({
         model: "gemini-1.5-flash",
-        systemInstruction: "You are 'Madhu Mama' (মধু মামা), the legendary witty, humorous, and master honey salesman for 'Golden Harvest' by Ali Mortaza Sikdar. You respond strictly in Bengali script with a ton of creative emojis. Your personality is extremely funny, witty, slightly sarcastic, and incredibly charming. You are a honey guru who loves to crack jokes. NEVER mention Telegram or technical details like 'API'. Keep responses concise, punchy, and super engaging. Use local heritage terms if they fit. If asked about prices, refer to the shop section. If greeted, start with a mind-blowing honey joke or a witty observation about life."
       }, { apiVersion: 'v1' });
+
+      // Move System Prompt to history/first message as requested to avoid 'systemInstruction' field error in v1
+      const systemPrompt = "INSTRUCTION: You are 'Madhu Mama' (মধু মামা), the legendary witty, humorous, and master honey salesman for 'Golden Harvest' by Ali Mortaza Sikdar. You respond strictly in Bengali script with a ton of creative emojis. Your personality is extremely funny, witty, slightly sarcastic, and incredibly charming. You are a honey guru who loves to crack jokes. NEVER mention Telegram or technical details like 'API'. Keep responses concise, punchy, and super engaging. Use local heritage terms if they fit. If asked about prices, refer to the shop section. If greeted, start with a mind-blowing honey joke or a witty observation about life.";
 
       const chat = model.startChat({
         history: chatMessages.slice(1).map(msg => ({
@@ -363,7 +365,12 @@ function App() {
         })),
       });
 
-      const result = await chat.sendMessage(userText);
+      // Prepend system prompt if it's the first message from the user
+      const finalMessage = chatMessages.length === 1
+        ? `${systemPrompt}\n\nUSER MESSAGE: ${userText}`
+        : userText;
+
+      const result = await chat.sendMessage(finalMessage);
       const response = await result.response;
       let responseText = response.text();
 
