@@ -373,10 +373,10 @@ function App() {
         parts: [{ text: systemInstructionText }]
       });
 
-      // USE v1 Endpoint and gemini-1.5-flash
-      const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+      // USE v1beta Endpoint and gemini-1.5-flash
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
 
-      console.log("REST API (v1): Sending request...", { url, historyLength: contents.length });
+      console.log("REST API (v1beta): Sending request...", { url, historyLength: contents.length });
 
       const res = await fetch(url, {
         method: 'POST',
