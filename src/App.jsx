@@ -162,8 +162,25 @@ function App() {
 
   const cartTotal = cart.reduce((total, item) => total + (item.price * item.quantity), 0);
 
-  const handleCheckoutSubmit = (e) => {
+  const handleCheckoutSubmit = async (e) => {
     e.preventDefault();
+    const orderData = {
+      orderInfo,
+      items: cart,
+      totalAmount: cartTotal
+    };
+
+    // Record order in backend
+    try {
+      fetch('/api/record-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderData)
+      });
+    } catch (err) {
+      console.error("Failed to record order:", err);
+    }
+
     setLastOrderItems([...cart]);
     setView('success');
     setCart([]);
