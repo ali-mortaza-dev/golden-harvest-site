@@ -373,9 +373,9 @@ function App() {
         parts: [{ text: systemInstructionText }]
       });
 
-      // USE v1beta Endpoint with explicit model string 'models/gemini-1.5-flash'
+      // USE v1beta Endpoint with explicit model string 'models/gemini-1.5-flash-8b'
       const sanitizedKey = API_KEY.trim();
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${sanitizedKey}`;
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-8b:generateContent?key=${sanitizedKey}`;
 
       console.log("REST API (v1beta): Sending request to:", url.replace(sanitizedKey, '***'));
 
