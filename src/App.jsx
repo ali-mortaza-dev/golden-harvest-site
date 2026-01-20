@@ -329,6 +329,17 @@ function App() {
 
     const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 
+    // DETAILED DEBUG LOGS
+    const rawKey = import.meta.env.VITE_GEMINI_API_KEY;
+    console.log("VITE_GEMINI_API_KEY Type:", typeof rawKey);
+    console.log("VITE_GEMINI_API_KEY Length:", rawKey ? rawKey.length : 0);
+    console.log("VITE_GEMINI_API_KEY Masked:", rawKey ? `${rawKey.substring(0, 4)}...${rawKey.substring(rawKey.length - 4)}` : "N/A");
+
+    if (!rawKey) {
+      console.error("CRITICAL ERROR: Gemini API Key is missing from Environment Variables!");
+    }
+
+
     if (!API_KEY) {
       setChatMessages(prev => [...prev, {
         role: 'ai',
@@ -359,7 +370,11 @@ function App() {
       setChatMessages(prev => [...prev, { role: 'ai', text: responseText }]);
     } catch (error) {
       console.error("Gemini Error:", error);
-      setChatMessages(prev => [...prev, { role: 'ai', text: 'হায় হায়! 🐝 মৌমাছির কামড়ে মধু মামার সার্ভার একটু ঝিমিয়ে গেছে। আবার একটু চেষ্টা করুন তো ভাই! 😂' }]);
+      const errorMessage = error.message || "An unknown error occurred";
+      setChatMessages(prev => [...prev, {
+        role: 'ai',
+        text: `Error: ${errorMessage}. (Check console for full details)`
+      }]);
     } finally {
       setIsTyping(false);
     }
