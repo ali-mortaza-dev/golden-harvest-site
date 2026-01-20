@@ -367,9 +367,9 @@ function App() {
           { role: 'user', parts: [{ text: userText }] }
         ];
 
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+      const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
 
-      console.log("REST API: Sending request to:", url.split('?')[0] + "?key=HIDDEN");
+      console.log("REST API (v1): Sending request. API Key Status:", API_KEY ? "PRESENT" : "MISSING/UNDEFINED");
 
       const res = await fetch(url, {
         method: 'POST',
