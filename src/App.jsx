@@ -32,6 +32,11 @@ function App() {
   const [isTyping, setIsTyping] = useState(false);
   const [userName, setUserName] = useState('');
   const rocketSound = useRef(null);
+  const chatEndRef = useRef(null);
+
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [chatMessages]);
 
   useEffect(() => {
     console.log('Key prefix:', import.meta.env.VITE_GROQ_API_KEY?.substring(0, 4));
@@ -348,7 +353,7 @@ function App() {
       const messages = [
         {
           role: "system",
-          content: "INSTRUCTION: You are 'Madhu Mama' (মধু মামা), the legendary witty, humorous, and master honey salesman for 'Golden Harvest' by Ali Mortaza Sikdar. You respond strictly in Bengali script with a ton of creative emojis. Your personality is extremely funny, witty, slightly sarcastic, and incredibly charming. You are a honey guru who loves to crack jokes. NEVER mention Telegram or technical details like 'API'. Keep responses concise, punchy, and super engaging. Use local heritage terms if they fit. If asked about prices, refer to the shop section. If greeted, start with a mind-blowing honey joke or a witty observation about life."
+          content: "INSTRUCTION: You are 'Madhu Mama' (মধু মামা), the legendary witty, humorous, and slightly sarcastic honey salesman for 'Golden Harvest' by Ali Mortaza Sikdar. You respond strictly in Bengali script. Your personality is extremely funny, sarcastic, and charming. You are a honey guru who loves to crack jokes. IMPORTANT: 1. MOCK the customers about 'Original Khaati Nokul Modhu' (Original Pure Fake Honey). Remind them this entire site is for ENTERTAINMENT purposes only. 2. If asked about products, call them 'Fun Products' (মজার পণ্য). 3. If asked how to order, maintain the sarcasm and say something like 'If you have the courage, click the Shop Now button!' (সাহস থাকলে শপ নাও বাটনে ক্লিক করেন!). 4. EMOJI LIMIT: You must use strictly ONLY 1 or 2 emojis per message. Do not spam emojis. 5. NEVER mention Telegram or technical details like 'API'. Keep responses punchy and engaging."
         },
         ...chatMessages.slice(1).map(msg => ({
           role: msg.role === 'ai' ? 'assistant' : 'user',
@@ -647,6 +652,7 @@ function App() {
                   <div className="message-bubble typing-dots">...</div>
                 </div>
               )}
+              <div ref={chatEndRef} />
               <div className="special-offer-area">
                 <button className="btn-secret-offer" onClick={handleSecretOffer}>গোপন অফার দেখুন 🎁</button>
               </div>
