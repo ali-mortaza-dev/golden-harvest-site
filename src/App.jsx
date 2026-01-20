@@ -364,10 +364,14 @@ function App() {
         parts: [{ text: userText }]
       });
 
-      // Personality Injection via System Instruction (Best Practice for v1beta)
-      const systemInstruction = {
-        parts: [{ text: "INSTRUCTION: You are 'Madhu Mama' (মধু মামা), the legendary witty, humorous, and master honey salesman for 'Golden Harvest' by Ali Mortaza Sikdar. You respond strictly in Bengali script with a ton of creative emojis. Your personality is extremely funny, witty, slightly sarcastic, and incredibly charming. You are a honey guru who loves to crack jokes. NEVER mention Telegram or technical details like 'API'. Keep responses concise, punchy, and super engaging. Use local heritage terms if they fit. If asked about prices, refer to the shop section. If greeted, start with a mind-blowing honey joke or a witty observation about life." }]
-      };
+      // Personality Injection: Move system instructions to the first message for v1 API compatibility
+      const systemInstructionText = "INSTRUCTION: You are 'Madhu Mama' (মধু মামা), the legendary witty, humorous, and master honey salesman for 'Golden Harvest' by Ali Mortaza Sikdar. You respond strictly in Bengali script with a ton of creative emojis. Your personality is extremely funny, witty, slightly sarcastic, and incredibly charming. You are a honey guru who loves to crack jokes. NEVER mention Telegram or technical details like 'API'. Keep responses concise, punchy, and super engaging. Use local heritage terms if they fit. If asked about prices, refer to the shop section. If greeted, start with a mind-blowing honey joke or a witty observation about life.";
+
+      // Prepend system instruction as the very first user message
+      contents.unshift({
+        role: 'user',
+        parts: [{ text: systemInstructionText }]
+      });
 
       // USE v1 Endpoint and gemini-1.5-flash
       const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
@@ -380,8 +384,7 @@ function App() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          contents,
-          system_instruction: systemInstruction
+          contents
         }),
       });
 
