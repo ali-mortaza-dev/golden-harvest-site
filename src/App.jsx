@@ -34,7 +34,7 @@ function App() {
   const rocketSound = useRef(null);
 
   useEffect(() => {
-    console.log('Key prefix:', import.meta.env.VITE_GEMINI_API_KEY?.substring(0, 4));
+    console.log('Key prefix:', import.meta.env.VITE_GROQ_API_KEY?.substring(0, 4));
     rocketSound.current = new Audio('https://cdn.pixabay.com/audio/2025/02/26/audio_febae8992b.mp3');
     rocketSound.current.preload = 'auto';
   }, []);
@@ -327,80 +327,65 @@ function App() {
     setChatMessages(prev => [...prev, { role: 'user', text: userText }]);
     setChatInput('');
     setIsTyping(true);
-    console.log("Gemini API: Initializing request (Account Update Verified)...");
 
-    const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
+    const API_KEY = import.meta.env.VITE_GROQ_API_KEY;
 
     // DETAILED DEBUG LOGS
-    console.log('Key prefix:', import.meta.env.VITE_GEMINI_API_KEY?.substring(0, 4));
+    console.log('Key prefix:', API_KEY ? API_KEY.substring(0, 4) : 'undefined');
 
     if (!API_KEY) {
-      console.error("CRITICAL ERROR: Gemini API Key is missing from Environment Variables!");
-    }
-
-    if (!API_KEY) {
+      console.error("CRITICAL ERROR: Groq API Key is missing from Environment Variables!");
       setChatMessages(prev => [...prev, {
         role: 'ai',
-        text: 'ওহ ভাই! 🤦‍♂️ মধু মামার ব্রেইন (API Key) কানেক্ট করা নেই। দয়া করে Vercel-এ VITE_GEMINI_API_KEY টা ঠিকঠাক বসিয়ে দিন! 🍯🚀'
+        text: 'ওহ ভাই! 🤦‍♂️ মধু মামার ব্রেইন (API Key) কানেক্ট করা নেই। দয়া করে Vercel-এ VITE_GROQ_API_KEY টা ঠিকঠাক বসিয়ে দিন! 🍯🚀'
       }]);
       setIsTyping(false);
       return;
     }
 
     try {
-      // PREPARE CHAT HISTORY FOR REST API
-      // Filter identifying initial greeting if necessary, assuming first msg is AI greeting
-      // We start from index 1 if index 0 is the hardcoded greeting
-      const historyMessages = chatMessages.slice(1);
+      // PREPARE CHAT HISTORY FOR GROQ (OpenAI Format)
+      const messages = [
+        {
+          role: "system",
+          content: "INSTRUCTION: You are 'Madhu Mama' (মধু মামা), the legendary witty, humorous, and master honey salesman for 'Golden Harvest' by Ali Mortaza Sikdar. You respond strictly in Bengali script with a ton of creative emojis. Your personality is extremely funny, witty, slightly sarcastic, and incredibly charming. You are a honey guru who loves to crack jokes. NEVER mention Telegram or technical details like 'API'. Keep responses concise, punchy, and super engaging. Use local heritage terms if they fit. If asked about prices, refer to the shop section. If greeted, start with a mind-blowing honey joke or a witty observation about life."
+        },
+        ...chatMessages.slice(1).map(msg => ({
+          role: msg.role === 'ai' ? 'assistant' : 'user',
+          content: msg.text
+        })),
+        { role: "user", content: userText }
+      ];
 
-      const contents = historyMessages.map(msg => ({
-        role: msg.role === 'ai' ? 'model' : 'user',
-        parts: [{ text: msg.text }],
-      }));
+      // USE Groq Endpoint and llama-3.3-70b-versatile
+      const url = "https://api.groq.com/openai/v1/chat/completions";
 
-      // Add the current user message
-      contents.push({
-        role: 'user',
-        parts: [{ text: userText }]
-      });
-
-      // Personality Injection: Move system instructions to the first message for v1 API compatibility
-      const systemInstructionText = "INSTRUCTION: You are 'Madhu Mama' (মধু মামা), the legendary witty, humorous, and master honey salesman for 'Golden Harvest' by Ali Mortaza Sikdar. You respond strictly in Bengali script with a ton of creative emojis. Your personality is extremely funny, witty, slightly sarcastic, and incredibly charming. You are a honey guru who loves to crack jokes. NEVER mention Telegram or technical details like 'API'. Keep responses concise, punchy, and super engaging. Use local heritage terms if they fit. If asked about prices, refer to the shop section. If greeted, start with a mind-blowing honey joke or a witty observation about life.";
-
-      // Prepend system instruction as the very first user message
-      contents.unshift({
-        role: 'user',
-        parts: [{ text: systemInstructionText }]
-      });
-
-      // USE v1beta Endpoint with explicit model string 'models/gemini-1.5-flash-8b'
-      const sanitizedKey = API_KEY.trim();
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-8b:generateContent?key=${sanitizedKey}`;
-
-      console.log("REST API (v1beta): Sending request to:", url.replace(sanitizedKey, '***'));
+      console.log("REST API (Groq): Sending request...", { url, historyLength: messages.length });
 
       const res = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${API_KEY}`
         },
         body: JSON.stringify({
-          contents
+          model: "llama-3.3-70b-versatile",
+          messages: messages
         }),
       });
 
       if (!res.ok) {
         const errorData = await res.json().catch(() => ({}));
-        console.error("Gemini API Error Response:", errorData);
+        console.error("Groq API Error Response:", errorData);
         throw new Error(errorData.error?.message || `HTTP error! status: ${res.status}`);
       }
 
       const data = await res.json();
-      const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text || "MAMA IS TIRED... 🍯 (No response text found)";
+      const responseText = data.choices?.[0]?.message?.content || "MAMA IS TIRED... 🍯 (No response text found)";
 
       setChatMessages(prev => [...prev, { role: 'ai', text: responseText }]);
     } catch (error) {
-      console.error("Gemini REST Error:", error);
+      console.error("Groq REST Error:", error);
       const errorMessage = error.message || "An unknown error occurred";
       setChatMessages(prev => [...prev, {
         role: 'ai',
