@@ -1,3 +1,4 @@
+// Build Trigger: Ensuring Gemini API key is correctly picked up from Vercel env
 import React, { useState, useRef, useEffect } from 'react'
 import confetti from 'canvas-confetti'
 import { GoogleGenerativeAI } from "@google/generative-ai"
