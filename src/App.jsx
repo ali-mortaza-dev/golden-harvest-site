@@ -326,6 +326,7 @@ function App() {
     setChatMessages(prev => [...prev, { role: 'user', text: userText }]);
     setChatInput('');
     setIsTyping(true);
+    console.log("Gemini API: Initializing request (Account Update Verified)...");
 
     const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 
