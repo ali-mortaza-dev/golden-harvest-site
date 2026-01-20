@@ -765,17 +765,80 @@ h3 {
   align-items: flex-end;
 }
 
-.social-icon-link.ai-toggle:hover {
-  transform: translateY(-3px);
-  filter: brightness(1.2);
+.ai-chat-float {
+  width: 70px;
+  height: 70px;
+  background: none;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: none;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  z-index: 2001;
+  filter: drop-shadow(0 10px 25px rgba(212, 175, 55, 0.4));
 }
 
-.ai-logo {
-  font-family: 'Outfit', sans-serif;
-  font-weight: 900;
-  font-size: 1.8rem;
-  color: #fff;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+.ai-chat-float:hover {
+  transform: scale(1.1) rotate(10deg);
+}
+
+.premium-logo {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.ai-tooltip {
+  position: absolute;
+  right: 85px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: white;
+  color: #2c1e12;
+  padding: 0.8rem 1.2rem;
+  border-radius: 15px;
+  font-family: 'Tiro Bangla', serif;
+  font-weight: 700;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  border: 2px solid var(--primary-gold);
+  opacity: 1;
+  /* Always visible as per user request (or appear on hover, but user said "ensure it stays visible or appear on hover", I'll make it always visible for clarity) */
+  animation: tooltip-bounce 3s infinite ease-in-out;
+}
+
+.ai-tooltip::after {
+  content: '';
+  position: absolute;
+  right: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  border-left: 10px solid var(--primary-gold);
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+}
+
+@keyframes tooltip-bounce {
+
+  0%,
+  100% {
+    transform: translateY(-50%) translateX(0);
+  }
+
+  50% {
+    transform: translateY(-50%) translateX(-10px);
+  }
+}
+
+@media (max-width: 768px) {
+  .ai-tooltip {
+    display: none;
+    /* Hide tooltip on small screens to save space */
+  }
 }
 
 .chat-window {
