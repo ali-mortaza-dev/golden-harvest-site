@@ -339,7 +339,6 @@ function App() {
       console.error("CRITICAL ERROR: Gemini API Key is missing from Environment Variables!");
     }
 
-
     if (!API_KEY) {
       setChatMessages(prev => [...prev, {
         role: 'ai',
@@ -351,36 +350,45 @@ function App() {
 
     try {
       // PREPARE CHAT HISTORY FOR REST API
-      const history = chatMessages.slice(1).map(msg => ({
+      // Filter identifying initial greeting if necessary, assuming first msg is AI greeting
+      // We start from index 1 if index 0 is the hardcoded greeting
+      const historyMessages = chatMessages.slice(1);
+
+      const contents = historyMessages.map(msg => ({
         role: msg.role === 'ai' ? 'model' : 'user',
         parts: [{ text: msg.text }],
       }));
 
-      // Personality Injection: Prepend system prompt to the first user message or as a stand-alone part
-      const systemPrompt = "INSTRUCTION: You are 'Madhu Mama' (মধু মামা), the legendary witty, humorous, and master honey salesman for 'Golden Harvest' by Ali Mortaza Sikdar. You respond strictly in Bengali script with a ton of creative emojis. Your personality is extremely funny, witty, slightly sarcastic, and incredibly charming. You are a honey guru who loves to crack jokes. NEVER mention Telegram or technical details like 'API'. Keep responses concise, punchy, and super engaging. Use local heritage terms if they fit. If asked about prices, refer to the shop section. If greeted, start with a mind-blowing honey joke or a witty observation about life.";
+      // Add the current user message
+      contents.push({
+        role: 'user',
+        parts: [{ text: userText }]
+      });
 
-      const contents = chatMessages.length === 1
-        ? [{ role: 'user', parts: [{ text: `${systemPrompt}\n\nUSER MESSAGE: ${userText}` }] }]
-        : [
-          { role: 'user', parts: [{ text: systemPrompt }] },
-          ...history,
-          { role: 'user', parts: [{ text: userText }] }
-        ];
+      // Personality Injection via System Instruction (Best Practice for v1beta)
+      const systemInstruction = {
+        parts: [{ text: "INSTRUCTION: You are 'Madhu Mama' (মধু মামা), the legendary witty, humorous, and master honey salesman for 'Golden Harvest' by Ali Mortaza Sikdar. You respond strictly in Bengali script with a ton of creative emojis. Your personality is extremely funny, witty, slightly sarcastic, and incredibly charming. You are a honey guru who loves to crack jokes. NEVER mention Telegram or technical details like 'API'. Keep responses concise, punchy, and super engaging. Use local heritage terms if they fit. If asked about prices, refer to the shop section. If greeted, start with a mind-blowing honey joke or a witty observation about life." }]
+      };
 
-      const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+      // USE v1beta Endpoint and gemini-1.5-flash-latest
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${API_KEY}`;
 
-      console.log("REST API (v1): Sending request. API Key Status:", API_KEY ? "PRESENT" : "MISSING/UNDEFINED");
+      console.log("REST API (v1beta): Sending request...", { url, historyLength: contents.length });
 
       const res = await fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ contents }),
+        body: JSON.stringify({
+          contents,
+          system_instruction: systemInstruction
+        }),
       });
 
       if (!res.ok) {
-        const errorData = await res.json();
+        const errorData = await res.json().catch(() => ({}));
+        console.error("Gemini API Error Response:", errorData);
         throw new Error(errorData.error?.message || `HTTP error! status: ${res.status}`);
       }
 
