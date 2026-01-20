@@ -350,33 +350,46 @@ function App() {
     }
 
     try {
-      const genAI = new GoogleGenerativeAI(API_KEY);
-      const model = genAI.getGenerativeModel({
-        model: "gemini-1.5-flash-latest",
-      }, { apiVersion: 'v1beta' });
+      // PREPARE CHAT HISTORY FOR REST API
+      const history = chatMessages.slice(1).map(msg => ({
+        role: msg.role === 'ai' ? 'model' : 'user',
+        parts: [{ text: msg.text }],
+      }));
 
-      // Move System Prompt to history/first message as requested to avoid 'systemInstruction' field error in v1
+      // Personality Injection: Prepend system prompt to the first user message or as a stand-alone part
       const systemPrompt = "INSTRUCTION: You are 'Madhu Mama' (মধু মামা), the legendary witty, humorous, and master honey salesman for 'Golden Harvest' by Ali Mortaza Sikdar. You respond strictly in Bengali script with a ton of creative emojis. Your personality is extremely funny, witty, slightly sarcastic, and incredibly charming. You are a honey guru who loves to crack jokes. NEVER mention Telegram or technical details like 'API'. Keep responses concise, punchy, and super engaging. Use local heritage terms if they fit. If asked about prices, refer to the shop section. If greeted, start with a mind-blowing honey joke or a witty observation about life.";
 
-      const chat = model.startChat({
-        history: chatMessages.slice(1).map(msg => ({
-          role: msg.role === 'ai' ? 'model' : 'user',
-          parts: [{ text: msg.text }],
-        })),
+      const contents = chatMessages.length === 1
+        ? [{ role: 'user', parts: [{ text: `${systemPrompt}\n\nUSER MESSAGE: ${userText}` }] }]
+        : [
+          { role: 'user', parts: [{ text: systemPrompt }] },
+          ...history,
+          { role: 'user', parts: [{ text: userText }] }
+        ];
+
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
+
+      console.log("REST API: Sending request to:", url.split('?')[0] + "?key=HIDDEN");
+
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ contents }),
       });
 
-      // Prepend system prompt if it's the first message from the user
-      const finalMessage = chatMessages.length === 1
-        ? `${systemPrompt}\n\nUSER MESSAGE: ${userText}`
-        : userText;
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.error?.message || `HTTP error! status: ${res.status}`);
+      }
 
-      const result = await chat.sendMessage(finalMessage);
-      const response = await result.response;
-      let responseText = response.text();
+      const data = await res.json();
+      const responseText = data.candidates?.[0]?.content?.parts?.[0]?.text || "MAMA IS TIRED... 🍯 (No response text found)";
 
       setChatMessages(prev => [...prev, { role: 'ai', text: responseText }]);
     } catch (error) {
-      console.error("Gemini Error:", error);
+      console.error("Gemini REST Error:", error);
       const errorMessage = error.message || "An unknown error occurred";
       setChatMessages(prev => [...prev, {
         role: 'ai',
