@@ -34,6 +34,7 @@ function App() {
   const rocketSound = useRef(null);
 
   useEffect(() => {
+    console.log('Key prefix:', import.meta.env.VITE_GEMINI_API_KEY?.substring(0, 4));
     rocketSound.current = new Audio('https://cdn.pixabay.com/audio/2025/02/26/audio_febae8992b.mp3');
     rocketSound.current.preload = 'auto';
   }, []);
@@ -331,12 +332,9 @@ function App() {
     const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 
     // DETAILED DEBUG LOGS
-    const rawKey = import.meta.env.VITE_GEMINI_API_KEY;
-    console.log("VITE_GEMINI_API_KEY Type:", typeof rawKey);
-    console.log("VITE_GEMINI_API_KEY Length:", rawKey ? rawKey.length : 0);
-    console.log("VITE_GEMINI_API_KEY Masked:", rawKey ? `${rawKey.substring(0, 4)}...${rawKey.substring(rawKey.length - 4)}` : "N/A");
+    console.log('Key prefix:', import.meta.env.VITE_GEMINI_API_KEY?.substring(0, 4));
 
-    if (!rawKey) {
+    if (!API_KEY) {
       console.error("CRITICAL ERROR: Gemini API Key is missing from Environment Variables!");
     }
 
