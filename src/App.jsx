@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react'
 import confetti from 'canvas-confetti'
+import { GoogleGenerativeAI } from "@google/generative-ai"
 import './App.css'
 import profileImg from './assets/profile.jpg'
 import undergroundImg from './assets/underground_honey.png'
@@ -24,9 +25,10 @@ function App() {
   const [activeReview, setActiveReview] = useState(0);
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [chatMessages, setChatMessages] = useState([
-    { role: 'ai', text: 'সালাম ভাই! 🍯 আমি আপনার মধু মামা। একদম খাঁটি (নকল) মধুর খবর জানতে চান নাকি? 😂 আড্ডা দিন প্রাণ খুলে! 🚀' }
+    { role: 'ai', text: 'সালাম ভাই! 🍯 আমি আপনার মধু মামা। একদম বুদ্ধিমান, রসে টইটুম্বর আর আপনার সেবায় সবসময় হাজির! 😂 কিছু একতা লিখে ফেলুন, আড্ডা শুরু করি! 🚀' }
   ]);
   const [chatInput, setChatInput] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
   const [userName, setUserName] = useState('');
   const rocketSound = useRef(null);
 
@@ -315,55 +317,51 @@ function App() {
     "আমাদের মধু খেলে আপনি আয়নায় নিজেকে মৌমাছির মতো সুন্দর দেখতে পাবেন! 🐝😎"
   ];
 
-  const handleChatSubmit = (e) => {
+  const handleChatSubmit = async (e) => {
     e.preventDefault();
-    if (!chatInput.trim()) return;
+    if (!chatInput.trim() || isTyping) return;
 
     const userText = chatInput.trim();
     setChatMessages(prev => [...prev, { role: 'user', text: userText }]);
     setChatInput('');
+    setIsTyping(true);
 
-    // Local Logic Engine
-    setTimeout(() => {
-      const lower = userText.toLowerCase();
-      let response = "";
+    const API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
 
-      // Context: Name Discovery
-      if (lower.includes("আমার নাম") || lower.includes("i am") || lower.includes("im ")) {
-        const parts = lower.split(/নাম|am|im/i);
-        if (parts.length > 1) {
-          const name = parts[1].trim();
-          setUserName(name);
-          response = `${name} ভাই! 🍯 দারুন নাম তো আপনার। একদম মধু মামার পছন্দের নাম! 😂 কি সেবা করতে পারি? 🚀`;
-        }
-      }
+    if (!API_KEY) {
+      setChatMessages(prev => [...prev, {
+        role: 'ai',
+        text: 'ওহ ভাই! 🤦‍♂️ মধু মামার ব্রেইন (API Key) কানেক্ট করা নেই। দয়া করে Vercel-এ VITE_GEMINI_API_KEY টা ঠিকঠাক বসিয়ে দিন! 🍯🚀'
+      }]);
+      setIsTyping(false);
+      return;
+    }
 
-      if (!response) {
-        let category = "default";
-        if (lower.includes("তথ্য") || lower.includes("জমা") || lower.includes("কোথায়") || lower.includes("privacy")) {
-          category = "privacy";
-        } else if (lower.includes("অর্ডার") || lower.includes("কিভাবে") || lower.includes("order")) {
-          category = "ordering";
-        } else if (lower.includes("সালাম") || lower.includes("হ্যালো") || lower.includes("hi") || lower.includes("hello") || lower.includes("assalam")) {
-          category = "greetings";
-        } else if (lower.includes("মধু") || lower.includes("খাঁটি") || lower.includes("quality") || lower.includes("honey")) {
-          category = "quality";
-        } else if (lower.includes("মজা") || lower.includes("জোকস") || lower.includes("joke") || lower.includes("funny")) {
-          category = "jokes";
-        }
+    try {
+      const genAI = new GoogleGenerativeAI(API_KEY);
+      const model = genAI.getGenerativeModel({
+        model: "gemini-1.5-flash",
+        systemInstruction: "You are 'Madhu Mama' (মধু মামা), a witty, humorous, and expert honey salesman for 'Golden Harvest' by Ali Mortaza Sikdar. You respond strictly in Bengali script with creative emojis. Your personality is extremely funny, witty, slightly sarcastic but very helpful, and focused on selling honey. NEVER mention Telegram. Keep responses relatively concise and very engaging. Use local heritage terms if they fit. If asked about prices, refer to the shop section. You are the ultimate honey guru. If the user greets you, respond with a hilarious Bengali joke about honey or bees."
+      });
 
-        const pool = CHAT_LOGIC[category];
-        const randomIdx = Math.floor(Math.random() * pool.length);
-        response = pool[randomIdx];
+      const chat = model.startChat({
+        history: chatMessages.slice(1).map(msg => ({
+          role: msg.role === 'ai' ? 'model' : 'user',
+          parts: [{ text: msg.text }],
+        })),
+      });
 
-        // Add context if name is known
-        if (userName && Math.random() > 0.5) {
-          response = `${userName} ভাই, মধু মামা বলছি, ` + response;
-        }
-      }
+      const result = await chat.sendMessage(userText);
+      const response = await result.response;
+      let responseText = response.text();
 
-      setChatMessages(prev => [...prev, { role: 'ai', text: response }]);
-    }, 600);
+      setChatMessages(prev => [...prev, { role: 'ai', text: responseText }]);
+    } catch (error) {
+      console.error("Gemini Error:", error);
+      setChatMessages(prev => [...prev, { role: 'ai', text: 'হায় হায়! 🐝 মৌমাছির কামড়ে মধু মামার সার্ভার একটু ঝিমিয়ে গেছে। আবার একটু চেষ্টা করুন তো ভাই! 😂' }]);
+    } finally {
+      setIsTyping(false);
+    }
   };
 
   const handleSecretOffer = () => {
@@ -575,17 +573,24 @@ function App() {
       <div className={`ai-chat-container ${isChatOpen ? 'open' : ''}`}>
         <button className="ai-chat-float" onClick={() => setIsChatOpen(!isChatOpen)}>
           <div className="ai-tooltip">মধু মামার সাথে চ্যাট করুন</div>
-          <svg viewBox="0 0 100 100" className="premium-logo">
+          <svg viewBox="0 0 24 24" className="premium-logo-svg">
             <defs>
-              <linearGradient id="gold-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" style={{ stopColor: '#FFD700', stopOpacity: 1 }} />
-                <stop offset="50%" style={{ stopColor: '#F4D03F', stopOpacity: 1 }} />
-                <stop offset="100%" style={{ stopColor: '#B87333', stopOpacity: 1 }} />
+              <linearGradient id="gemini-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#FFF2CC" />
+                <stop offset="30%" stopColor="#ffd700" />
+                <stop offset="60%" stopColor="#d4af37" />
+                <stop offset="100%" stopColor="#996515" />
               </linearGradient>
+              <filter id="gold-glow">
+                <feGaussianBlur stdDeviation="1.5" result="coloredBlur" />
+                <feMerge>
+                  <feMergeNode in="coloredBlur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
             </defs>
-            <circle cx="50" cy="50" r="48" fill="url(#gold-grad)" stroke="#2c1e12" strokeWidth="2" />
-            <path d="M50 20 L60 40 L80 40 L65 55 L70 75 L50 65 L30 75 L35 55 L20 40 L40 40 Z" fill="#2c1e12" />
-            <text x="50" y="85" textAnchor="middle" fill="#2c1e12" fontSize="12" fontWeight="900" fontFamily="Outfit">MADHU MAMA</text>
+            <path fill="url(#gemini-gold)" filter="url(#gold-glow)" d="M12,2L14.5,9.5L22,12L14.5,14.5L12,22L9.5,14.5L2,12L9.5,9.5L12,2Z" />
+            <path fill="white" opacity="0.4" d="M12,6L13.5,10.5L18,12L13.5,13.5L12,18L10.5,13.5L6,12L10.5,10.5L12,6Z" />
           </svg>
         </button>
 
@@ -605,18 +610,24 @@ function App() {
                   <div className="message-bubble">{msg.text}</div>
                 </div>
               ))}
+              {isTyping && (
+                <div className="message ai">
+                  <div className="message-bubble typing-dots">...</div>
+                </div>
+              )}
               <div className="special-offer-area">
-                <button className="btn-secret-offer" onClick={handleSecretOffer}>گোপন অফার দেখুন 🎁</button>
+                <button className="btn-secret-offer" onClick={handleSecretOffer}>গোপন অফার দেখুন 🎁</button>
               </div>
             </div>
             <form className="chat-input-area" onSubmit={handleChatSubmit}>
               <input
                 type="text"
-                placeholder="আপনার বার্তা লিখুন..."
+                placeholder="মধু মামাকে কিছু জিগান..."
                 value={chatInput}
                 onChange={(e) => setChatInput(e.target.value)}
+                disabled={isTyping}
               />
-              <button type="submit">✈️</button>
+              <button type="submit" disabled={isTyping}>✈️</button>
             </form>
           </div>
         )}

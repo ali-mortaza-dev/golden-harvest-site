@@ -766,8 +766,8 @@ h3 {
 }
 
 .ai-chat-float {
-  width: 70px;
-  height: 70px;
+  width: 65px;
+  height: 65px;
   background: none;
   border-radius: 50%;
   display: flex;
@@ -778,37 +778,49 @@ h3 {
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   position: relative;
   z-index: 2001;
-  filter: drop-shadow(0 10px 25px rgba(212, 175, 55, 0.4));
 }
 
 .ai-chat-float:hover {
-  transform: scale(1.1) rotate(10deg);
+  transform: scale(1.1);
 }
 
-.premium-logo {
+.premium-logo-svg {
   width: 100%;
   height: 100%;
-  border-radius: 50%;
+  filter: drop-shadow(0 0 10px rgba(244, 208, 63, 0.6));
+  animation: logo-glow 3s infinite ease-in-out;
+}
+
+@keyframes logo-glow {
+
+  0%,
+  100% {
+    filter: drop-shadow(0 0 10px rgba(244, 208, 63, 0.4));
+    transform: scale(1);
+  }
+
+  50% {
+    filter: drop-shadow(0 0 20px rgba(244, 208, 63, 0.8));
+    transform: scale(1.05);
+  }
 }
 
 .ai-tooltip {
   position: absolute;
-  right: 85px;
+  right: 80px;
   top: 50%;
   transform: translateY(-50%);
   background: white;
   color: #2c1e12;
-  padding: 0.8rem 1.2rem;
-  border-radius: 15px;
-  font-family: 'Tiro Bangla', serif;
+  padding: 0.6rem 1.2rem;
+  border-radius: 12px;
+  font-family: 'Outfit', sans-serif;
   font-weight: 700;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   white-space: nowrap;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-  border: 2px solid var(--primary-gold);
-  opacity: 1;
-  /* Always visible as per user request (or appear on hover, but user said "ensure it stays visible or appear on hover", I'll make it always visible for clarity) */
-  animation: tooltip-bounce 3s infinite ease-in-out;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  border: 1.5px solid #d4af37;
+  animation: tooltip-float 3s infinite ease-in-out;
 }
 
 .ai-tooltip::after {
@@ -817,12 +829,12 @@ h3 {
   right: -10px;
   top: 50%;
   transform: translateY(-50%);
-  border-left: 10px solid var(--primary-gold);
+  border-left: 10px solid #d4af37;
   border-top: 8px solid transparent;
   border-bottom: 8px solid transparent;
 }
 
-@keyframes tooltip-bounce {
+@keyframes tooltip-float {
 
   0%,
   100% {
@@ -830,7 +842,7 @@ h3 {
   }
 
   50% {
-    transform: translateY(-50%) translateX(-10px);
+    transform: translateY(-50%) translateX(-8px);
   }
 }
 
@@ -842,24 +854,24 @@ h3 {
 }
 
 .chat-window {
-  width: 360px;
-  max-height: 550px;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(15px);
-  border-radius: 25px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  width: 220px;
+  max-height: 400px;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(20px);
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
   border: 1px solid rgba(212, 175, 55, 0.3);
   display: flex;
   flex-direction: column;
-  margin-bottom: 20px;
-  animation: slide-up-chat 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  margin-bottom: 12px;
+  animation: modal-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   overflow: hidden;
 }
 
-@keyframes slide-up-chat {
+@keyframes modal-pop {
   from {
     opacity: 0;
-    transform: translateY(40px) scale(0.9);
+    transform: translateY(20px) scale(0.95);
   }
 
   to {
@@ -909,13 +921,13 @@ h3 {
 
 .chat-messages {
   flex-grow: 1;
-  padding: 1.5rem;
+  padding: 1.2rem;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
-  background: #fffaf0;
-  max-height: 350px;
+  gap: 0.8rem;
+  background: #fff;
+  max-height: 320px;
 }
 
 .message {
@@ -1031,9 +1043,30 @@ h3 {
   }
 
   .chat-window {
-    width: 320px;
-    position: fixed;
-    bottom: 90px;
+    width: 300px;
+    bottom: 85px;
     right: 20px;
+  }
+
+  .ai-tooltip {
+    display: none;
+  }
+}
+
+.typing-dots {
+  font-style: italic;
+  opacity: 0.7;
+  animation: typing 1.5s infinite;
+}
+
+@keyframes typing {
+
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+
+  50% {
+    opacity: 1;
   }
 }
