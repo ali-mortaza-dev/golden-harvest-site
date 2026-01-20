@@ -369,10 +369,10 @@ function App() {
         parts: [{ text: "INSTRUCTION: You are 'Madhu Mama' (মধু মামা), the legendary witty, humorous, and master honey salesman for 'Golden Harvest' by Ali Mortaza Sikdar. You respond strictly in Bengali script with a ton of creative emojis. Your personality is extremely funny, witty, slightly sarcastic, and incredibly charming. You are a honey guru who loves to crack jokes. NEVER mention Telegram or technical details like 'API'. Keep responses concise, punchy, and super engaging. Use local heritage terms if they fit. If asked about prices, refer to the shop section. If greeted, start with a mind-blowing honey joke or a witty observation about life." }]
       };
 
-      // USE v1beta Endpoint and gemini-1.5-flash-latest
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${API_KEY}`;
+      // USE v1 Endpoint and gemini-1.5-flash
+      const url = `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
 
-      console.log("REST API (v1beta): Sending request...", { url, historyLength: contents.length });
+      console.log("REST API (v1): Sending request...", { url, historyLength: contents.length });
 
       const res = await fetch(url, {
         method: 'POST',
